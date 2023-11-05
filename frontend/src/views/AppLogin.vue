@@ -1,7 +1,5 @@
 <template>
-	<div
-		class="flex min-h-screen flex-col items-center justify-center gap-4 bg-slate-200 px-4 dark:bg-slate-800"
-	>
+	<div class="flex min-h-screen flex-col items-center justify-center gap-4 px-4">
 		<AppAlert :msg="errorMessage" type="error" v-if="error" />
 		<div class="text-center">
 			<AppLogo class="text-2xl md:text-4xl" />
@@ -32,7 +30,7 @@
 				<span class="text font-semibold">Logar com Microsoft</span>
 			</button>
 			<button
-				class="flex w-full items-center gap-3 rounded-md border bg-black/75 px-4 py-3 text-slate-100 hover:bg-slate-800 dark:border-slate-100"
+				class="flex w-full items-center gap-3 rounded-md border bg-black/75 px-4 py-3 text-slate-100 hover:bg-slate-800 focus:outline focus:outline-slate-600 dark:border-slate-100"
 				@click.prevent="loginAnonymously"
 			>
 				<Icon class="h-8 w-8" icon="ooui:user-anonymous" />
