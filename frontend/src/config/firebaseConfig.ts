@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app"
 import { getAuth, GoogleAuthProvider, GithubAuthProvider, OAuthProvider, signInAnonymously, signInWithPopup, signOut, fetchSignInMethodsForEmail, User, AuthProvider } from "firebase/auth"
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs } from "firebase/firestore"
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,5 +25,7 @@ const googleProvider = new GoogleAuthProvider()
 const githubProvider = new GithubAuthProvider()
 const microsoftProvider = new OAuthProvider("microsoft.com")
 
-export { app, auth, googleProvider, githubProvider, microsoftProvider, signInWithPopup, signOut, signInAnonymously, fetchSignInMethodsForEmail }
+const db = getFirestore(app)
+
+export { app, auth, db, googleProvider, githubProvider, microsoftProvider, signInWithPopup, signOut, signInAnonymously, fetchSignInMethodsForEmail, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs }
 export type { User, AuthProvider }

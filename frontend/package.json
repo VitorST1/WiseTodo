@@ -12,6 +12,7 @@
     "format": "prettier --write \"src/**/*.{js,ts,css,md,json}\" --config ./.prettierrc"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.16",
     "firebase": "^10.5.2",
     "pinia": "^2.1.7",
     "vue": "^3.3.4",

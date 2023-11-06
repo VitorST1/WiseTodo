@@ -1,3 +1,3 @@
 <template>
-	<div class="font-bold text-slate-800 dark:text-slate-300">WiseTodo</div>
+	<div class="font-bold">WiseTodo</div>
 </template>
