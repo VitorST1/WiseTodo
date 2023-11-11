@@ -6,8 +6,10 @@ export interface User {
 }
 
 export interface Task {
-    id: string
+    id?: string
     name: string
     date: string
     completed: boolean
+    tip: string,
+    userId: string
 }

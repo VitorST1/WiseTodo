@@ -1,12 +1,7 @@
 import { initializeApp } from "firebase/app"
 import { getAuth, GoogleAuthProvider, GithubAuthProvider, OAuthProvider, signInAnonymously, signInWithPopup, signOut, fetchSignInMethodsForEmail, User, AuthProvider } from "firebase/auth"
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs } from "firebase/firestore"
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, getDoc, setDoc } from "firebase/firestore"
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -27,5 +22,5 @@ const microsoftProvider = new OAuthProvider("microsoft.com")
 
 const db = getFirestore(app)
 
-export { app, auth, db, googleProvider, githubProvider, microsoftProvider, signInWithPopup, signOut, signInAnonymously, fetchSignInMethodsForEmail, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs }
+export { app, auth, db, googleProvider, githubProvider, microsoftProvider, signInWithPopup, signOut, signInAnonymously, fetchSignInMethodsForEmail, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, getDoc, setDoc }
 export type { User, AuthProvider }

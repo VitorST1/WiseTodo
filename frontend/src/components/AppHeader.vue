@@ -16,7 +16,7 @@
 				<PopoverButton class="rounded">
 					<img
 						class="inline-block h-8 w-8 rounded-full bg-slate-200 ring-2 ring-inset ring-slate-200"
-						:src="userStore.data?.photoURL || 'assets/user.svg'"
+						:src="userStore?.data?.photoURL || 'assets/user.svg'"
 						alt="User avatar"
 					/>
 				</PopoverButton>
@@ -42,16 +42,24 @@ import { Icon } from "@iconify/vue"
 import { useDark, useToggle } from "@vueuse/core"
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue"
 import AppLogo from "./AppLogo.vue"
+import { onMounted } from "vue"
 
 const userStore = uStore()
-
 let isDarkValue: boolean
+let gotFromFirebase = userStore.data?.isAnonymous
+
+onMounted(async () => {
+	const darkModeFromFirebase = await userStore.fetchDarkMode()
+	gotFromFirebase = true
+	if (darkModeFromFirebase != undefined) {
+		toggleDark(darkModeFromFirebase)
+	}
+})
 
 const isDark = useDark({
 	onChanged(dark) {
-		if (isDarkValue !== undefined) {
-			console.log(dark)
-			// save to firebase
+		if (isDarkValue !== undefined && gotFromFirebase) {
+			userStore.updateDarkMode(dark)
 		}
 		isDarkValue = dark
 	},

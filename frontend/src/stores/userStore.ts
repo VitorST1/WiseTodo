@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { User } from "../types/types"
-import { auth, signInWithPopup, signInAnonymously, googleProvider, githubProvider, microsoftProvider, signOut, User as FirebaseUser, AuthProvider, fetchSignInMethodsForEmail } from "../config/firebaseConfig"
+import { auth, signInWithPopup, signInAnonymously, googleProvider, githubProvider, microsoftProvider, signOut, User as FirebaseUser, AuthProvider, fetchSignInMethodsForEmail, db, setDoc, updateDoc, getDoc, doc } from "../config/firebaseConfig"
 
 export const userStore = defineStore("user", {
     state: (): User => ({
@@ -16,6 +16,16 @@ export const userStore = defineStore("user", {
                 const res = await signInWithPopup(auth, provider)
                 this.setLoggedIn(true)
                 this.setUser(res.user)
+                if(res.user.metadata.creationTime == res.user.metadata.lastSignInTime) {
+                    if(!res.user.isAnonymous) {
+                        const userRef = doc(db, "users", res.user.uid)
+                        await setDoc(userRef, {
+                            userId: res.user.uid,
+                            darkMode: false
+                        },
+                        { merge: true})
+                    }
+                }
                 return res
             } catch(error: any) {
                 console.log("error", {error})
@@ -85,6 +95,18 @@ export const userStore = defineStore("user", {
                 this.setUser(null)
             }
         },
+        async fetchDarkMode() {
+            if(this.user.data?.isAnonymous) return undefined
+            const userRef = doc(db, "users", this!.user!.data!.uid)
+            const userData = await getDoc(userRef)
+            return userData.data()?.darkMode ?? false
+        },
+        async updateDarkMode(darkMode: boolean) {
+            if(!this.user.data?.isAnonymous) {
+                const userRef = doc(db, "users", this!.user!.data!.uid)
+                await updateDoc(userRef, { darkMode })
+            }
+        },
         setLoggedIn(loggedIn: boolean) {
             this.loggedIn = loggedIn
             localStorage.setItem("loggedIn", JSON.stringify(loggedIn))
@@ -92,6 +114,6 @@ export const userStore = defineStore("user", {
         setUser(data: FirebaseUser | null) {
             this.data = data
             localStorage.setItem("user", JSON.stringify(data))
-        }
+        },
     },
 })
