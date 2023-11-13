@@ -1,9 +1,14 @@
 import { defineStore } from "pinia"
 import { Task } from "../types/types"
-import { db, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs } from "../config/firebaseConfig"
+import { db, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, serverTimestamp, orderBy } from "../config/firebaseConfig"
 import { userStore as uStore } from "./userStore"
+import openai from "../services/openai"
+import date from "../utils/date"
 
 const tasksCollection = collection(db, "tasks")
+
+let retriesCount = 0
+const RETRIES_LIMIT = 3
 
 type FirestoreTask = {
     [key: string]: any
@@ -16,13 +21,14 @@ export const taskStore = defineStore("task", {
         date: "",
         completed: false,
         tip: "",
-        userId: ""
+        userId: "",
+        difficulty: 0
     }),
     actions: {
         async fetchAll() {
             const userStore = uStore()
             const userId = userStore.data!.uid
-            const tasksQuery = query(tasksCollection, where("userId", "==", userId))
+            const tasksQuery = query(tasksCollection, where("userId", "==", userId), orderBy("date", "asc"))
             const tasksSnapshot = await getDocs(tasksQuery)
             const tasks:Task[] = []
             tasksSnapshot.forEach((doc) => {
@@ -33,22 +39,22 @@ export const taskStore = defineStore("task", {
                         date: doc.data().date,
                         completed: doc.data().completed,
                         tip: doc.data().tip,
-                        userId: doc.data().userId
+                        userId: doc.data().userId,
+                        difficulty: doc.data().difficulty
                     }
                 )
             })
-            // const tasks = tasksSnapshot.docs.map(doc => doc.data() as Task)
-            // console.log(tasks)
             return tasks
         },
         async add(task: Task) {
             const userStore = uStore()
             task.userId = userStore.data!.uid
-            // console.log({task})
             try {
-                const resp = await addDoc(tasksCollection, task)
-                console.log({resp})
-                return resp
+                const resp = await addDoc(tasksCollection, { ...task, createdAt: serverTimestamp() })
+                task.id = resp.id
+                const tipPromise = this.generateTip(task)
+                const difficultyPromise = this.generateDifficulty(task)
+                return { task, tipPromise, difficultyPromise }
             } catch(error) {
                 console.log({error})
                 return false
@@ -60,23 +66,89 @@ export const taskStore = defineStore("task", {
                 date: task.date,
                 completed: task.completed,
                 tip: task.tip,
-                userId: task.userId
+                userId: task.userId,
+                difficulty: task.difficulty
             }
+
+            function removeUndefinedProperties(obj:any) {
+                Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
+                return obj;
+            }
+            
             const taskRef = doc(db, "tasks", task.id!)
-            await updateDoc(taskRef, firestoreTask)
+            await updateDoc(taskRef, removeUndefinedProperties(firestoreTask))
         },
         async remove(task: Task) {
             const taskRef = doc(db, "tasks", task.id!)
             await deleteDoc(taskRef);
+        },
+        async generateTip(task: Task) {
+            const systemPrompt = `
+                Você atuará como um orientador para um aplicativo de gerenciamento de tarefas.
+                O usuário fornecerá uma tarefa.
+                Sua função é exclusivamente gerar dicas úteis diretamente para ajudar o usuário a concluir a tarefa.
+                A dica deve ser concisa, ter no máximo uma linha e estar correta ortográficamente.
+                Não deixe de lado informações importantes.
+                Sua resposta deve estar em português brasileiro.
+            `
+            // Certifique-se de não haver erros ortográficos na resposta.
+            const resp = await openai.completion(systemPrompt, task.name)
+            if(resp) {
+                task.tip = resp
+                task.difficulty = undefined
+                this.update(task)
+            }
+            return resp || undefined
+        },
+        async generateDifficulty(task: Task, retries: number = 0): Promise<number> {
+            let resp: string | null
+            if(new Date(task.date).setUTCHours(27, 0, 0, 0) < new Date().getTime()) {
+                resp = "4"
+            } else {
+                const systemPrompt = `Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. O usuario fornecerá a descrição de uma tarefa e um prazo no formato yyyy-mm-dd. Leve em consideração que a data atual é ${date.getCurrentDate("yyyy-mm-dd")}. Com base nessas informações, você deve avaliar a dificuldade de realizar a tarefa no prazo definido, classificando-a numericamente. Use '1' para tarefas fáceis, '2' para tarefas de dificuldade média, '3' para tarefas difíceis. Não há problema se o limite for igual à data atual. Sua resposta deve conter apenas 1 caractere.`
+                resp = await openai.completion(systemPrompt, `${task.name}${task.date}. A resposta é:`)
+                if(!resp) {
+                    if(retries >= RETRIES_LIMIT) {
+                        retriesCount = 0
+                        return 2
+                    }
+                    retriesCount++
+                    return this.generateDifficulty(task, retriesCount)
+                }
+                console.log({resp})
+            }
+            task.difficulty = parseInt(resp, 10)
+            if(Number.isNaN(task.difficulty) || ![1, 2, 3, 4].includes(task.difficulty)) {
+                if(retries >= RETRIES_LIMIT) {
+                    retriesCount = 0
+                    return 2
+                }
+                retriesCount++
+                return this.generateDifficulty(task, retriesCount)
+            }
+            task.tip = undefined
+            this.update(task)
+            return task.difficulty
+        },
+        async generateSuggestion(): Promise<string> {
+            const tasks = await this.fetchAll()
+
+            let systemPrompt = ""
+            const userPrompt = ""
+
+            if(tasks.length) {
+                systemPrompt = ""
+            } else {
+                systemPrompt = ""
+            }
+
+            const suggestion = await openai.completion(systemPrompt, userPrompt)
+            if(!suggestion) {
+                return this.generateSuggestion()
+            }
+            console.log({suggestion})
+            
+            return suggestion
         }
     }
 })
-
-// taskStore.$onAction(({ after, onError }: any) => {
-//     after((resolvedValue: any) => {
-//         console.log("Action completed!", resolvedValue)
-//     })
-//     onError((error: any) => {
-//         console.log("Action failed!", error)
-//     })
-// })

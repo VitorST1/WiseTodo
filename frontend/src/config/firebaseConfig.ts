@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app"
 import { getAuth, GoogleAuthProvider, GithubAuthProvider, OAuthProvider, signInAnonymously, signInWithPopup, signOut, fetchSignInMethodsForEmail, User, AuthProvider } from "firebase/auth"
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, getDoc, setDoc } from "firebase/firestore"
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, getDoc, setDoc, serverTimestamp, orderBy } from "firebase/firestore"
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -22,5 +22,5 @@ const microsoftProvider = new OAuthProvider("microsoft.com")
 
 const db = getFirestore(app)
 
-export { app, auth, db, googleProvider, githubProvider, microsoftProvider, signInWithPopup, signOut, signInAnonymously, fetchSignInMethodsForEmail, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, getDoc, setDoc }
+export { app, auth, db, googleProvider, githubProvider, microsoftProvider, signInWithPopup, signOut, signInAnonymously, fetchSignInMethodsForEmail, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, getDoc, setDoc, serverTimestamp, orderBy }
 export type { User, AuthProvider }

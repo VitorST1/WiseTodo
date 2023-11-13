@@ -6,12 +6,27 @@
 			</RouterLink>
 		</div>
 		<div class="flex items-center gap-3">
-			<Icon
-				class="text-xl hover:text-slate-300"
-				:icon="isDark ? 'ri:moon-fill' : 'lucide:sun'"
-				role="button"
-				@click="toggleDark()"
-			/>
+			<div
+				class="tooltip-accent-content tooltip tooltip-bottom py-2 leading-none hover:text-slate-300"
+				data-tip="Mudar Tema"
+			>
+				<label class="swap swap-rotate">
+					<!-- this hidden checkbox controls the state -->
+					<input type="checkbox" />
+					<Icon
+						class="swap-on text-xl"
+						:icon="isDark ? 'ri:moon-fill' : 'lucide:sun'"
+						role="button"
+						@click="toggleDark()"
+					/>
+					<Icon
+						class="swap-off text-xl"
+						:icon="isDark ? 'ri:moon-fill' : 'lucide:sun'"
+						role="button"
+						@click="toggleDark()"
+					/>
+				</label>
+			</div>
 			<Popover class="relative">
 				<PopoverButton class="rounded">
 					<img

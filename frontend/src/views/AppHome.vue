@@ -11,18 +11,6 @@
 				<Icon class="text-lg" icon="fluent:add-circle-24-filled" />
 				<span>Nova Tarefa</span>
 			</button>
-			<button
-				class="flex items-center gap-2 rounded-md p-2 hover:text-slate-600 dark:text-slate-100 dark:hover:text-slate-300"
-				@click="setModalFilterIsOpen(true)"
-			>
-				<Icon class="text-lg" icon="bi:filter" />
-				<span>Filtrar</span>
-				<!-- 
-					adicionar filtro onde a IA analisa as tarefas e organiza de acordo com sua importancia. 
-					The AI can help users prioritize their tasks by analyzing the importance, deadline, and other factors associated with each task.
-					adicionar botão de sugestão, onde a IA irá gerar uma tarefa baseada nas tarefas existentes do usuário.
-				-->
-			</button>
 		</div>
 		<UserTasksList />
 		<Dialog :open="ModalAddTaskIsOpen" @close="setModalAddTaskIsOpen" class="relative z-50">
@@ -46,6 +34,12 @@
 					</DialogTitle>
 					<div class="p-4">
 						<form class="flex flex-col gap-3" @submit.prevent="addTask">
+							<button
+								class="mt-1 w-full rounded-md bg-blue-500 p-2 text-slate-100 shadow hover:bg-blue-700"
+								@click.prevent="getSuggestion"
+							>
+								Obter Sugestão
+							</button>
 							<div>
 								<label for="taskName" class="text-slate-500 dark:text-slate-200">Tarefa:</label>
 								<input
@@ -55,6 +49,7 @@
 									v-model="newTask.name"
 									placeholder="Tarefa"
 									required
+									autofocus
 								/>
 							</div>
 							<div>
@@ -71,6 +66,7 @@
 								/>
 							</div>
 							<button
+								type="submit"
 								class="mt-1 w-full rounded-md bg-indigo-600 p-2 text-slate-100 shadow hover:bg-indigo-700"
 							>
 								Cadastrar
@@ -95,7 +91,6 @@ import AppAlert from "../components/AppAlert.vue"
 const taskStore = tStore()
 
 const ModalAddTaskIsOpen = ref(false)
-const ModalFilterIsOpen = ref(false)
 
 const error = ref(false)
 let errorMessage = ""
@@ -111,12 +106,14 @@ const newTask = ref({
 const addedTask = ref<any | null>(null)
 provide("addedTask", addedTask)
 
+const tip = ref<any | null>(null)
+provide("tip", tip)
+
+const difficulty = ref<any | null>(null)
+provide("difficulty", difficulty)
+
 const setModalAddTaskIsOpen = (value: boolean) => {
 	ModalAddTaskIsOpen.value = value
-}
-
-const setModalFilterIsOpen = (value: boolean) => {
-	ModalFilterIsOpen.value = value
 }
 
 const addTask = async () => {
@@ -125,11 +122,12 @@ const addTask = async () => {
 		completed: false,
 		tip: "",
 		userId: "",
+		difficulty: 0,
+		loadingDifficulty: true,
 	}
 	const success = await taskStore.add(task)
 	if (success) {
-		addedTask.value = { ...success }
-		provide("addedTask", addedTask)
+		addedTask.value = { ...success.task }
 		newTask.value = {
 			name: "",
 			date: "",
@@ -137,11 +135,26 @@ const addTask = async () => {
 			tip: "",
 			userId: "",
 		}
+		success.tipPromise.then((newTip) => {
+			tip.value = { taskId: addedTask.value.id, newTip }
+		})
+		success.difficultyPromise.then((newDifficulty) => {
+			difficulty.value = { taskId: addedTask.value.id, newDifficulty }
+		})
 	} else {
 		error.value = true
 		errorMessage = "Ocorreu um erro!"
 	}
 
 	setModalAddTaskIsOpen(false)
+}
+
+const getSuggestion = async () => {
+	try {
+		const suggestion = await taskStore.generateSuggestion()
+		newTask.value.name = suggestion
+	} catch (error) {
+		console.error(error)
+	}
 }
 </script>

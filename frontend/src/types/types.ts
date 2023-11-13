@@ -10,6 +10,9 @@ export interface Task {
     name: string
     date: string
     completed: boolean
-    tip: string,
+    tip?: string
     userId: string
+    loadingTip?: boolean
+    loadingDifficulty?: boolean
+    difficulty?: number
 }
