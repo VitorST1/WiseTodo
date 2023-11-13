@@ -40,14 +40,31 @@
 						<Icon class="text-xl" icon="ci:bulb" role="button" />
 						<div class="sm:hidden">Dica</div>
 					</button>
-					<input
-						type="date"
-						class="w-full rounded bg-slate-700 px-1 text-slate-300 invalid:ring invalid:ring-red-500 dark:bg-slate-300 dark:text-slate-700 sm:w-auto"
-						@input="dateChanged"
-						:min="today"
-						:disabled="task.completed"
-						v-model="inputDate"
-					/>
+					<div
+						class="flex"
+						:class="{
+							'tooltip tooltip-bottom':
+								(new Date(task.date).toDateString() === new Date(today).toDateString() ||
+									new Date(task.date) < new Date()) &&
+								!task.completed,
+						}"
+						:data-tip="dateTip"
+					>
+						<input
+							type="date"
+							title=""
+							class="w-full rounded bg-slate-700 px-1 text-slate-300 invalid:ring invalid:ring-red-500 dark:bg-slate-300 dark:text-slate-700 sm:w-auto"
+							:class="{
+								'ring ring-yellow-400':
+									new Date(task.date).toDateString() === new Date(today).toDateString() &&
+									!task.completed,
+							}"
+							@input="dateChanged"
+							:min="today"
+							:disabled="task.completed"
+							v-model="inputDate"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -147,6 +164,19 @@ const difficultyText = computed(() => {
 		default:
 			return ""
 	}
+})
+
+const dateTip = computed(() => {
+	if (task.value.completed) return ""
+
+	const date = new Date(inputDate).getTime()
+	const todayDate = new Date(today).getTime()
+
+	if (date < todayDate) {
+		return "Tarefa atrasada"
+	}
+
+	return "Tarefa para hoje"
 })
 
 watch(
