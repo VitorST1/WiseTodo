@@ -1,7 +1,6 @@
 <template>
 	<AppHeader />
 	<AppAlert :msg="errorMessage" type="error" v-if="error" />
-	<!-- <HelloWorld msg="Vite + Vue" /> -->
 	<div class="flex flex-col gap-4 p-5">
 		<div class="flex gap-4">
 			<button
@@ -35,16 +34,18 @@
 					<div class="p-4">
 						<form class="flex flex-col gap-3" @submit.prevent="addTask">
 							<button
-								class="mt-1 w-full rounded-md bg-blue-500 p-2 text-slate-100 shadow hover:bg-blue-700"
+								class="mt-1 flex w-full items-center justify-center gap-2 rounded-md bg-blue-500 p-2 text-slate-100 shadow hover:bg-blue-700 disabled:bg-blue-300"
+								:disabled="loadingSuggestion"
 								@click.prevent="getSuggestion"
 							>
-								Obter Sugestão
+								<span class="loading loading-spinner loading-md" v-if="loadingSuggestion"></span>
+								<div>Obter Sugestão</div>
 							</button>
 							<div>
 								<label for="taskName" class="text-slate-500 dark:text-slate-200">Tarefa:</label>
 								<input
 									id="taskName"
-									class="w-full rounded-md border bg-slate-300 p-2 text-slate-700 dark:bg-slate-500 dark:text-slate-200"
+									class="w-full rounded-md border bg-slate-300 p-[9px] text-slate-700 dark:border-0 dark:bg-slate-500 dark:text-slate-200"
 									type="text"
 									v-model="newTask.name"
 									placeholder="Tarefa"
@@ -58,9 +59,10 @@
 								>
 								<input
 									id="taskDate"
-									class="w-full rounded-md border bg-slate-300 p-2 dark:bg-slate-500"
+									class="w-full rounded-md border bg-slate-300 p-[8px] dark:border-0 dark:bg-slate-500"
 									:class="{ 'text-slate-700 dark:text-slate-200': newTask.date.length }"
 									type="date"
+									:min="today"
 									v-model="newTask.date"
 									required
 								/>
@@ -103,6 +105,10 @@ const newTask = ref({
 	userId: "",
 })
 
+let loadingSuggestion = ref(false)
+
+const today = new Date().toISOString().split("T")[0]
+
 const addedTask = ref<any | null>(null)
 provide("addedTask", addedTask)
 
@@ -114,6 +120,7 @@ provide("difficulty", difficulty)
 
 const setModalAddTaskIsOpen = (value: boolean) => {
 	ModalAddTaskIsOpen.value = value
+	if (!value && loadingSuggestion) loadingSuggestion.value = false
 }
 
 const addTask = async () => {
@@ -151,8 +158,10 @@ const addTask = async () => {
 
 const getSuggestion = async () => {
 	try {
+		loadingSuggestion.value = true
 		const suggestion = await taskStore.generateSuggestion()
 		newTask.value.name = suggestion
+		loadingSuggestion.value = false
 	} catch (error) {
 		console.error(error)
 	}

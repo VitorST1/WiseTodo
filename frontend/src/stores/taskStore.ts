@@ -90,10 +90,11 @@ export const taskStore = defineStore("task", {
                 A dica deve ser concisa, ter no máximo uma linha e estar correta ortográficamente.
                 Não deixe de lado informações importantes.
                 Sua resposta deve estar em português brasileiro.
+                Certifique-se de que sua escrita esteja de acordo com a ortografia brasileira.
             `
-            // Certifique-se de não haver erros ortográficos na resposta.
-            const resp = await openai.completion(systemPrompt, task.name)
+            let resp = await openai.completion(systemPrompt, `${task.name}. A dica é:`)
             if(resp) {
+                resp = resp.split("---")[0].trim().replace(/^"(.+(?="$))"(\.)?$/, "$1")
                 task.tip = resp
                 task.difficulty = undefined
                 this.update(task)
@@ -134,12 +135,15 @@ export const taskStore = defineStore("task", {
             const tasks = await this.fetchAll()
 
             let systemPrompt = ""
-            const userPrompt = ""
+            let userPrompt = ""
 
             if(tasks.length) {
-                systemPrompt = ""
+                const tasksNames = tasks.map(task => task.name)
+                systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Baseado em uma lista de tarefas, você deve sugerir uma nova tarefa única para o usuário. Sua resposta deve estar em português brasileiro e conter apenas a sugestão. A lista recebida será um array em que cada posição é a descrição de uma tarefa."
+                userPrompt = `${JSON.stringify(tasksNames)}. A sugestão é:`
             } else {
-                systemPrompt = ""
+                systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Sugira uma tarefa única simples para o usuário fazer. Assegure-se de que sua sugestão seja clara, prática e fácil de implementar. Sua resposta deve estar em português brasileiro, estar no infinitivo e deve conter exclusivamente a sugestão da tarefa, sem qualquer outra informação adicional. Certifique-se de que sua resposta esteja no infinitivo."
+                userPrompt = "Sugira-me uma tarefa. A tarefa é:"
             }
 
             const suggestion = await openai.completion(systemPrompt, userPrompt)
@@ -148,7 +152,7 @@ export const taskStore = defineStore("task", {
             }
             console.log({suggestion})
             
-            return suggestion
+            return suggestion.split("\n")[0].trim().replace(/^"(.+(?="$))"(\.)?$/, "$1")
         }
     }
 })

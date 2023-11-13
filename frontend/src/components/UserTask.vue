@@ -42,8 +42,10 @@
 					</button>
 					<input
 						type="date"
-						class="ring-in w-full rounded bg-slate-700 px-1 text-slate-300 invalid:ring invalid:ring-red-500 dark:bg-slate-300 dark:text-slate-700 sm:w-auto"
+						class="w-full rounded bg-slate-700 px-1 text-slate-300 invalid:ring invalid:ring-red-500 dark:bg-slate-300 dark:text-slate-700 sm:w-auto"
 						@input="dateChanged"
+						:min="today"
+						:disabled="task.completed"
 						v-model="inputDate"
 					/>
 				</div>
@@ -77,7 +79,7 @@
 						</div>
 						<button
 							class="mt-1 flex w-full items-center justify-center gap-3 rounded-md bg-indigo-600 p-2 text-slate-100 shadow hover:bg-indigo-700 disabled:bg-indigo-400"
-							:disabled="loadingTip || task.completed || task.difficulty == 4"
+							:disabled="loadingTip || task.completed"
 							@click="generateTip"
 						>
 							<span class="loading loading-spinner loading-md" v-if="loadingTip"></span>
@@ -110,6 +112,8 @@ let taskTip: Ref<string | undefined> = ref(task.value.tip)
 let loadingTip: Ref<boolean | undefined> = ref(task.value.loadingTip)
 let taskDifficulty: Ref<number | undefined> = ref(task.value.difficulty)
 let loadingDifficulty: Ref<boolean | undefined> = ref(task.value.loadingDifficulty)
+
+const today = new Date().toISOString().split("T")[0]
 
 const ModalTipIsOpen = ref(false)
 
@@ -160,6 +164,7 @@ const setModalTipIsOpen = (value: boolean) => {
 }
 
 const dateChanged = (e: Event) => {
+	loadingDifficulty.value = true
 	const inputElement = e.target as HTMLInputElement
 	const date = new Date(inputDate)
 	if (isNaN(date.getTime())) {

@@ -95,14 +95,15 @@ const updateTaskDate = async ({ task, newDate }: { task: Task; newDate: string }
 		if (taskIndex !== -1) {
 			const updatedTask = {
 				...tasks.value[taskIndex],
+				date: newDate,
 				difficulty: newDifficulty,
 				loadingDifficulty: false,
 			}
 			tasks.value[taskIndex] = updatedTask
 		}
-		tasks.value = tasks.value.sort(
-			(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-		)
+		// tasks.value = tasks.value.sort(
+		// 	(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+		// )
 	} catch (error) {
 		console.error(error)
 	}
