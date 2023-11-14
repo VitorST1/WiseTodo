@@ -7,7 +7,7 @@
 		</div>
 		<div class="flex items-center gap-3">
 			<div
-				class="tooltip-accent-content tooltip tooltip-bottom py-2 leading-none hover:text-slate-300"
+				class="py-2 leading-none sm:tooltip sm:tooltip-bottom hover:text-slate-300"
 				data-tip="Mudar Tema"
 			>
 				<label class="swap swap-rotate">

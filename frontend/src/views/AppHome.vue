@@ -2,16 +2,29 @@
 	<AppHeader />
 	<AppAlert :msg="errorMessage" type="error" v-if="error" />
 	<div class="flex flex-col gap-4 p-5">
-		<div class="flex gap-4">
-			<button
-				class="flex items-center gap-2 rounded-md bg-indigo-600 p-2 text-slate-100 hover:bg-indigo-700 focus:outline focus:outline-indigo-300"
-				@click="setModalAddTaskIsOpen(true)"
-			>
-				<Icon class="text-lg" icon="fluent:add-circle-24-filled" />
-				<span>Nova Tarefa</span>
-			</button>
+		<div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+			<div class="flex w-full flex-col gap-4 sm:flex-row">
+				<button
+					class="flex items-center gap-2 rounded-md bg-indigo-600 p-2 text-slate-100 hover:bg-indigo-700 focus:outline focus:outline-indigo-300"
+					@click="setModalAddTaskIsOpen(true)"
+				>
+					<Icon class="text-lg" icon="fluent:add-circle-24-filled" />
+					<span>Nova Tarefa</span>
+				</button>
+				<button
+					class="flex items-center gap-2 rounded-md bg-red-500 p-2 text-slate-100 hover:bg-red-700 disabled:bg-red-300"
+					@click="removeCompletedTasks"
+				>
+					<Icon class="text-xl" icon="bi:trash-fill" role="button" />
+					<div>Remover Completadas</div>
+				</button>
+			</div>
+			<div class="sm:whitespace-nowrap">
+				{{ remainingTasks }}
+				{{ remainingTasks == 1 ? "Tarefa restante" : "Tarefas restantes" }}
+			</div>
 		</div>
-		<UserTasksList />
+		<UserTasksList @remainingTasks="setRemainingTasks" />
 		<Dialog :open="ModalAddTaskIsOpen" @close="setModalAddTaskIsOpen" class="relative z-50">
 			<!-- The backdrop, rendered as a fixed sibling to the panel container -->
 			<div class="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -107,6 +120,8 @@ const newTask = ref({
 
 let loadingSuggestion = ref(false)
 
+const remainingTasks = ref<number>(0)
+
 const today = new Date().toISOString().split("T")[0]
 
 const addedTask = ref<any | null>(null)
@@ -117,6 +132,9 @@ provide("tip", tip)
 
 const difficulty = ref<any | null>(null)
 provide("difficulty", difficulty)
+
+const tasksRemoved = ref<boolean>(false)
+provide("tasksRemoved", tasksRemoved)
 
 const setModalAddTaskIsOpen = (value: boolean) => {
 	ModalAddTaskIsOpen.value = value
@@ -160,10 +178,19 @@ const getSuggestion = async () => {
 	try {
 		loadingSuggestion.value = true
 		const suggestion = await taskStore.generateSuggestion()
-		newTask.value.name = suggestion
+		newTask.value.name = suggestion.replace(/\.$/, "")
 		loadingSuggestion.value = false
 	} catch (error) {
 		console.error(error)
 	}
+}
+
+const setRemainingTasks = (count: number) => {
+	remainingTasks.value = count
+}
+
+const removeCompletedTasks = async () => {
+	await taskStore.removeCompleted()
+	tasksRemoved.value = !tasksRemoved.value
 }
 </script>

@@ -4,6 +4,7 @@ import { db, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDoc
 import { userStore as uStore } from "./userStore"
 import openai from "../services/openai"
 import date from "../utils/date"
+import { toRaw } from "vue"
 
 const tasksCollection = collection(db, "tasks")
 
@@ -82,7 +83,17 @@ export const taskStore = defineStore("task", {
             const taskRef = doc(db, "tasks", task.id!)
             await deleteDoc(taskRef);
         },
-        async generateTip(task: Task) {
+        async removeCompleted() {
+            const tasks = await this.fetchAll()
+            const promise = tasks.map(async task => {
+                if(task.completed) {
+                    await this.remove(task)
+                }
+            })
+            await Promise.all(promise)
+        },
+        async generateTip(t: Task) {
+            const task = structuredClone(toRaw(t))
             const systemPrompt = `
                 Você atuará como um orientador para um aplicativo de gerenciamento de tarefas.
                 O usuário fornecerá uma tarefa.
@@ -101,7 +112,8 @@ export const taskStore = defineStore("task", {
             }
             return resp || undefined
         },
-        async generateDifficulty(task: Task, retries: number = 0): Promise<number> {
+        async generateDifficulty(t: Task, retries: number = 0): Promise<number> {
+            const task = structuredClone(toRaw(t))
             let resp: string | null
             if(new Date(task.date).setUTCHours(27, 0, 0, 0) < new Date().getTime()) {
                 resp = "4"
@@ -127,6 +139,7 @@ export const taskStore = defineStore("task", {
                 retriesCount++
                 return this.generateDifficulty(task, retriesCount)
             }
+
             task.tip = undefined
             this.update(task)
             return task.difficulty
@@ -139,10 +152,10 @@ export const taskStore = defineStore("task", {
 
             if(tasks.length) {
                 const tasksNames = tasks.map(task => task.name)
-                systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Baseado em uma lista de tarefas, você deve sugerir uma nova tarefa única para o usuário. Sua resposta deve estar em português brasileiro e conter apenas a sugestão. A lista recebida será um array em que cada posição é a descrição de uma tarefa."
+                systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Baseado em uma lista de tarefas, você deve sugerir uma nova tarefa única para o usuário. Sua resposta deve estar em português brasileiro, ser curta e conter apenas a sugestão. A lista recebida será um array em que cada posição é a descrição de uma tarefa."
                 userPrompt = `${JSON.stringify(tasksNames)}. A sugestão é:`
             } else {
-                systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Sugira uma tarefa única simples para o usuário fazer. Assegure-se de que sua sugestão seja clara, prática e fácil de implementar. Sua resposta deve estar em português brasileiro, estar no infinitivo e deve conter exclusivamente a sugestão da tarefa, sem qualquer outra informação adicional. Certifique-se de que sua resposta esteja no infinitivo."
+                systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Sugira uma tarefa única simples para o usuário fazer. Assegure-se de que sua sugestão seja clara, prática e fácil de implementar. Sua resposta deve estar em português brasileiro, ser curta, estar no infinitivo e deve conter exclusivamente a sugestão da tarefa, sem qualquer outra informação adicional. Certifique-se de que sua resposta esteja no infinitivo."
                 userPrompt = "Sugira-me uma tarefa. A tarefa é:"
             }
 

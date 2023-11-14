@@ -9,7 +9,7 @@
 				<div class="flex items-center gap-2">
 					<input
 						type="checkbox"
-						class="dark:checkbox-neutral checkbox ring-1 ring-inset ring-slate-400 checked:checkbox-success checked:dark:checkbox-success checked:ring-0 dark:ring-0"
+						class="dark:checkbox-neutral checkbox ring-1 ring-inset ring-slate-400 checked:checkbox-success checked:dark:checkbox-success checked:ring-0"
 						:checked="task.completed"
 						@input="completionChanged"
 					/>
@@ -53,7 +53,7 @@
 						<input
 							type="date"
 							title=""
-							class="w-full rounded bg-slate-700 px-1 text-slate-300 invalid:ring invalid:ring-red-500 dark:bg-slate-300 dark:text-slate-700 sm:w-auto"
+							class="w-full rounded bg-slate-700 p-2 text-slate-300 invalid:ring invalid:ring-red-500 dark:bg-slate-300 dark:text-slate-700 sm:w-auto sm:py-1"
 							:class="{
 								'ring ring-yellow-400':
 									new Date(task.date).toDateString() === new Date(today).toDateString() &&

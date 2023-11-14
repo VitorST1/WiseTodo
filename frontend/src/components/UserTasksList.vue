@@ -1,15 +1,17 @@
 <template>
-	<div class="flex flex-col gap-4">
-		{{ remainingTasks }}
-		{{ remainingTasks == 1 ? "Tarefa restante" : "Tarefas restantes" }}
-		<div v-for="task in tasks" :key="task.id">
-			<UserTask
-				:task="task"
-				@update:date="updateTaskDate"
-				@update:completed="updateTaskCompleted"
-				@removeTask="removeTask"
-			/>
+	<div class="flex flex-col items-center gap-4">
+		<span class="loading loading-spinner loading-lg py-5" v-if="loadingTasks"></span>
+		<div class="flex w-full flex-col gap-4" v-else-if="tasks.length">
+			<div v-for="task in tasks" :key="task.id">
+				<UserTask
+					:task="task"
+					@update:date="updateTaskDate"
+					@update:completed="updateTaskCompleted"
+					@removeTask="removeTask"
+				/>
+			</div>
 		</div>
+		<div class="text-slate-500" v-else>Adicione uma tarefa para continuar</div>
 	</div>
 </template>
 
@@ -22,16 +24,21 @@ import { Task } from "../types/types"
 const taskStore = tStore()
 
 const tasks = ref<Task[]>([])
+const loadingTasks = ref(false)
 
 const addedTask = inject<Ref<Task | null>>("addedTask", ref(null))
 const tip = inject<Ref<any | null>>("tip", ref(null))
 const difficulty = inject<Ref<any | null>>("difficulty", ref(null))
+const tasksRemoved = inject<Ref<boolean>>("tasksRemoved", ref(false))
+
+const emit = defineEmits(["remainingTasks"])
 
 const remainingTasks = computed(() => {
 	return tasks.value.filter((el) => !el.completed).length
 })
 
 onMounted(() => {
+	loadingTasks.value = true
 	getTasks()
 })
 
@@ -83,8 +90,17 @@ watch(difficulty, (difficulty) => {
 	}
 })
 
+watch(tasksRemoved, () => {
+	getTasks()
+})
+
+watch(remainingTasks, (t) => {
+	emit("remainingTasks", t)
+})
+
 const getTasks = async () => {
 	tasks.value = await taskStore.fetchAll()
+	loadingTasks.value = false
 }
 
 const updateTaskDate = async ({ task, newDate }: { task: Task; newDate: string }) => {
