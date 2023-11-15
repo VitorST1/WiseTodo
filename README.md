@@ -1,20 +1,21 @@
-# WiseTodo - WebApp de To-Do com Autenticação, Armazenamento via Firebase e Dicas com IA
+# WiseTodo - Web App de _To Do_ com Autenticação, Armazenamento via Firebase e Dicas com IA
 
-Este repositório contém o código-fonte de um WebApp de To-Do (lista de tarefas) que oferece recursos de autenticação de usuários, armazenamento das tarefas utilizando o Firebase e sugestões/dicas para as tarefas obtidas através de API de Inteligência Artificial.  
-O projeto foi feito como trabalho prático para a disciplina de Webservices, onde o objetivo era construir uma aplicação web mobile-first, utilizando duas ou mais APIs.
+Este repositório contém o código-fonte de um Web App de _To Do_ (lista de tarefas) que oferece recursos de autenticação de usuários, armazenamento das tarefas utilizando o Firebase e sugestões/dicas para as tarefas obtidas através de API de Inteligência Artificial.  
+O projeto foi feito como trabalho prático para a disciplina de Web Services, onde o objetivo era construir uma aplicação web _mobile first_, utilizando duas ou mais APIs.
 
 ## Recursos
 
-- **Autenticação de Usuários**: Os usuários podem fazer login via rede social ou entrar anonimamente.
-- **Criação de Tarefas**: O WebApp permite que os usuários criem novas tarefas e caso o usuário não tenha idéia de uma tarefa, a IA pode sugerir uma.
+- **Autenticação de Usuários**: Os usuários podem fazer _login_ via rede social ou entrar anonimamente.
+- **Criação de Tarefas**: O Web App permite que os usuários criem novas tarefas e caso o usuário não tenha idéia de uma tarefa, a IA pode sugerir uma.
 - **Armazenamento de Tarefas**: As tarefas criadas pelos usuários são armazenadas de forma segura no Firebase, permitindo que sejam acessadas e gerenciadas de qualquer dispositivo.
-- **Geração de Dicas e Dificuldade para Tarefa**: O WebApp utiliza uma IA para gerar dicas relacionadas às tarefas cadastradas pelos usuários e também para indicar para o usuário a dificuldade de executar a tarefa no tempo limite cadastrado. Essas dicas são fornecidas com base em modelos de linguagem avançados e podem ajudar os usuários a obter insights e ideias para suas tarefas.
-- **Interface Amigável**: O WebApp possui uma interface intuitiva e amigável, proporcionando uma experiência agradável ao usuário.
+- **Geração de Dicas e Dificuldade para Tarefa**: O Web App utiliza uma IA para gerar dicas relacionadas às tarefas cadastradas pelos usuários e também para indicar para o usuário a dificuldade de executar a tarefa no tempo limite cadastrado. Essas dicas são fornecidas com base em modelos de linguagem avançados e podem ajudar os usuários a obter _insights_ e ideias para suas tarefas.
+- **Interface Amigável**: O Web App possui uma interface intuitiva e amigável, proporcionando uma experiência agradável ao usuário.
+- **Escolha de Temas**: O Web App possui temas _dark_ e _light_ para atender as preferências do usuário.
 
 ## Tecnologias Utilizadas
 
-- **Vue.js**: O framework Vue.js é utilizado para construir a interface do usuário de forma reativa e modularizada através de componentes.
-- **Typescript**: O Typescript é utilizado para tipar as classes e interfaces do WebApp.
+- **Vue.js**: O _framework_ Vue.js é utilizado para construir a interface do usuário de forma reativa e modularizada através de componentes.
+- **Typescript**: O Typescript é utilizado para tipar as classes e interfaces do Web App.
 - **Tailwind CSS**: O Tailwind CSS é utilizado para estilizar a interface do usuário e promover responsividade.
 - **Firebase**: O Firebase é usado para autenticação de usuários e armazenamento seguro das tarefas.
 - **LM Studio Server**: O LM Studio opera como uma API, replicando as funcionalidades da OpenAI, porém, rodando um modelo LLM localmente. Dessa forma, pode fornecer dicas e sugestões para as tarefas cadastradas pelos usuários.
