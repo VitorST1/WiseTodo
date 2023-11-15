@@ -1,31 +1,38 @@
 # WiseTodo - WebApp de To-Do com Autenticação, Armazenamento via Firebase e Dicas com IA
 
-Este repositório contém o código-fonte de um WebApp de To-Do (lista de tarefas) que oferece recursos de autenticação de usuários, armazenamento das tarefas utilizando o Firebase e sugestões/dicas para as tarefas obtidas através da NovaAI API.
+Este repositório contém o código-fonte de um WebApp de To-Do (lista de tarefas) que oferece recursos de autenticação de usuários, armazenamento das tarefas utilizando o Firebase e sugestões/dicas para as tarefas obtidas através de API de Inteligência Artificial.  
+O projeto foi feito como trabalho prático para a disciplina de Webservices, onde o objetivo era construir uma aplicação web mobile-first, utilizando duas ou mais APIs.
 
-## Funcionalidades do WebApp
+## Recursos
 
-- **Autenticação de Usuários**: Os usuários podem fazer login via rede social para acessar suas tarefas personalizadas.
+- **Autenticação de Usuários**: Os usuários podem fazer login via rede social ou entrar anonimamente.
+- **Criação de Tarefas**: O WebApp permite que os usuários criem novas tarefas e caso o usuário não tenha idéia de uma tarefa, a IA pode sugerir uma.
 - **Armazenamento de Tarefas**: As tarefas criadas pelos usuários são armazenadas de forma segura no Firebase, permitindo que sejam acessadas e gerenciadas de qualquer dispositivo.
-- **Geração de Dicas para Tarefas**: O WebApp utiliza a poderosa NovaAI API para gerar dicas e sugestões relacionadas às tarefas cadastradas pelos usuários. Essas dicas são fornecidas com base em modelos de linguagem avançados e podem ajudar os usuários a obter insights e ideias para suas tarefas.
-- **Interface Amigável**: O WebApp possui uma interface intuitiva e amigável, proporcionando uma experiência agradável ao usuário durante a criação, edição e conclusão das tarefas.
+- **Geração de Dicas e Dificuldade para Tarefa**: O WebApp utiliza uma IA para gerar dicas relacionadas às tarefas cadastradas pelos usuários e também para indicar para o usuário a dificuldade de executar a tarefa no tempo limite cadastrado. Essas dicas são fornecidas com base em modelos de linguagem avançados e podem ajudar os usuários a obter insights e ideias para suas tarefas.
+- **Interface Amigável**: O WebApp possui uma interface intuitiva e amigável, proporcionando uma experiência agradável ao usuário.
 
 ## Tecnologias Utilizadas
 
-- **Vue.js**: O framework Vue.js é utilizado para construir a interface do usuário interativa e responsiva.
+- **Vue.js**: O framework Vue.js é utilizado para construir a interface do usuário de forma reativa e modularizada através de componentes.
 - **Typescript**: O Typescript é utilizado para tipar as classes e interfaces do WebApp.
-- **Tailwind CSS**: O Tailwind CSS é utilizado para estilizar a interface do usuário.
+- **Tailwind CSS**: O Tailwind CSS é utilizado para estilizar a interface do usuário e promover responsividade.
 - **Firebase**: O Firebase é usado para autenticação de usuários e armazenamento seguro das tarefas.
-- **NovaAI**: A API NovaAI é integrada ao WebApp para fornecer dicas e sugestões para as tarefas cadastradas pelos usuários.
+- **LM Studio Server**: O LM Studio opera como uma API, replicando as funcionalidades da OpenAI, porém, rodando um modelo LLM localmente. Dessa forma, pode fornecer dicas e sugestões para as tarefas cadastradas pelos usuários.
 
 ## Requisitos
 
-- **Node.js**
-- **Chave de autenticação Firebase**
-- **Chave de autenticação NovaAI**
+- **[Node.js](https://nodejs.org/en)**
+- **[Chave de autenticação Firebase](https://firebase.google.com/docs/projects/api-keys?hl=pt-br)**
+- **[Cloud Firestore](https://firebase.google.com/docs/firestore/quickstart?hl=pt-br)**
+- **[LM Studio](https://lmstudio.ai/)**
+- **[Modelo LLM](https://huggingface.co/models?pipeline_tag=text-generation&sort=trending)**
 
 ## Como Rodar
 
-Após certificar-se que os requisitos foram cumpridos, execute na pasta do projeto (frontend) os seguintes comandos:
+Após certificar-se que os requisitos foram cumpridos, configure suas chaves no arquivo `.env-example` e renomee-o para `.env`. Depois, execute na pasta do projeto os seguintes comandos:
 
-- `npm install` (Rodar apenas uma vez, é usado para instalar as dependências)
-- `npm run dev`  
+- `npm install`: Rodar apenas uma vez, é usado para instalar as dependências
+- `npm run dev`: Irá rodar o servidor de desenvolvimento, disponibilizando o endereço onde está rodando a aplicação (geralmente <http://localhost:5173>) OU  
+`npm run dev -- --host`: Irá rodar o servidor de desenvolvimento, mas disponibilizando a aplicação para outros dispositivos na rede local, através do IP da máquina.
+
+Acesse o endereço do servidor para acessar a aplicação.
