@@ -87,7 +87,9 @@
 							role="button"
 						></Icon>
 					</DialogTitle>
-					<div class="flex max-h-[90dvh] flex-col gap-4 overflow-y-auto p-4">
+					<div
+						class="flex max-h-[90dvh] flex-col gap-4 overflow-y-auto p-4 scrollbar-thin scrollbar-track-slate-300 scrollbar-thumb-slate-900 dark:scrollbar-track-slate-500"
+					>
 						<div
 							class="whitespace-pre-line break-words text-slate-500 dark:text-inherit"
 							v-if="taskTip"
