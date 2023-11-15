@@ -152,7 +152,7 @@ export const taskStore = defineStore("task", {
 
             if(tasks.length) {
                 const tasksNames = tasks.map(task => task.name)
-                systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Baseado em uma lista de tarefas, você deve sugerir uma nova tarefa única para o usuário. Sua resposta deve estar em português brasileiro, ser curta e conter apenas a sugestão. A lista recebida será um array em que cada posição é a descrição de uma tarefa."
+                systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Baseado em uma lista de tarefas, você deve sugerir uma nova tarefa única, que não esteja na lista, para o usuário. Sua resposta deve estar em português brasileiro, ser curta e conter apenas a sugestão. A lista recebida será um array em que cada posição é a descrição de uma tarefa."
                 userPrompt = `${JSON.stringify(tasksNames)}. A sugestão é:`
             } else {
                 systemPrompt = "Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. Sugira uma tarefa única simples para o usuário fazer. Assegure-se de que sua sugestão seja clara, prática e fácil de implementar. Sua resposta deve estar em português brasileiro, ser curta, estar no infinitivo e deve conter exclusivamente a sugestão da tarefa, sem qualquer outra informação adicional. Certifique-se de que sua resposta esteja no infinitivo."
