@@ -40,3 +40,7 @@ Após certificar-se de que os requisitos foram cumpridos, siga os passos a segui
 `npm run dev -- --host`: Irá rodar o servidor de desenvolvimento, mas disponibilizando a aplicação para outros dispositivos na rede local, através do IP da máquina.
 
 Acesse o endereço do servidor para acessar a aplicação.
+
+## Demonstração
+
+Uma demonstração do site pode ser encontrada no site de apresentação: [GitHub Pages](https://vitorst1.github.io/WiseTodo-Presentation/)
