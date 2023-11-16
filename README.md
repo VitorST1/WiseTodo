@@ -30,9 +30,12 @@ O projeto foi feito como trabalho prático para a disciplina de Web Services, on
 
 ## Como Rodar
 
-Após certificar-se que os requisitos foram cumpridos, configure suas chaves no arquivo `.env-example` e renomee-o para `.env`. Depois, execute na pasta do projeto os seguintes comandos:
+Após certificar-se de que os requisitos foram cumpridos, siga os passos a seguir:
 
-- `npm install`: Rodar apenas uma vez, é usado para instalar as dependências
+- Clone o repositório: `git clone https://github.com/VitorST1/WiseTodo.git` ou baixe o .zip: `wget https://github.com/VitorST1/WiseTodo/archive/refs/heads/master.zip` e descompacte-o.
+- Entre na pasta do projeto.
+- Configure suas chaves no arquivo `.env-example` e renomee-o para `.env`. Depois, execute na pasta do projeto os seguintes comandos:
+- `npm install`: Irá instalar as dependências. Rode apenas na primeira vez que for executar a aplicação.
 - `npm run dev`: Irá rodar o servidor de desenvolvimento, disponibilizando o endereço onde está rodando a aplicação (geralmente <http://localhost:5173>) OU  
 `npm run dev -- --host`: Irá rodar o servidor de desenvolvimento, mas disponibilizando a aplicação para outros dispositivos na rede local, através do IP da máquina.
 
