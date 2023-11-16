@@ -43,4 +43,4 @@ Acesse o endereço do servidor para acessar a aplicação.
 
 ## Demonstração
 
-Uma demonstração do site pode ser encontrada no site de apresentação: [GitHub Pages](https://vitorst1.github.io/WiseTodo-Presentation/)
+Uma demonstração do web app pode ser encontrada no site de apresentação: [GitHub Pages](https://vitorst1.github.io/WiseTodo-Presentation/)
