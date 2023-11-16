@@ -18,10 +18,14 @@
 			<div class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
 				<div class="flex">
 					<span class="loading loading-spinner loading-md" v-if="loadingDifficulty"></span>
-					<div class="flex items-center gap-3" :class="{ 'line-through': task.completed }" v-else>
-						<div class="h-2 w-2 rounded-full" :class="difficultyColor"></div>
-						<div class="line-clamp-2 text-sm">{{ difficultyText }}</div>
-					</div>
+					<span class="sm:tooltip sm:tooltip-bottom" data-tip="Dificuldade" v-else>
+						<div class="flex items-center gap-3" :class="{ 'line-through': task.completed }">
+							<div class="h-2 w-2 rounded-full" :class="difficultyColor"></div>
+							<div class="line-clamp-2 w-max text-sm">
+								{{ difficultyText }}
+							</div>
+						</div>
+					</span>
 				</div>
 				<div class="flex w-full flex-col items-stretch justify-end gap-3 sm:flex-row">
 					<button
@@ -156,13 +160,13 @@ const difficultyText = computed(() => {
 	if (task.value.completed || loadingDifficulty.value) return ""
 	switch (taskDifficulty.value) {
 		case 1:
-			return "Fácil"
+			return "Passeio no parque"
 		case 2:
-			return "Média"
+			return "Pequeno desafio"
 		case 3:
-			return "Difícil"
+			return "Escalada ao Everest"
 		case 4:
-			return "Impossível"
+			return "Além da realidade"
 		default:
 			return ""
 	}
