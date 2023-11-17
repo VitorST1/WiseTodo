@@ -1,5 +1,5 @@
 import OpenAI from "openai"
-const openai = new OpenAI({ apiKey: "123", baseURL: "http://localhost:8000/v1", dangerouslyAllowBrowser: true })
+const openai = new OpenAI({ apiKey: "123", baseURL: import.meta.env.VITE_OPENAI_BASEURL, dangerouslyAllowBrowser: true })
 
 async function completion(systemPrompt: string, userPrompt: string) {
     const completion = await openai.chat.completions.create({
