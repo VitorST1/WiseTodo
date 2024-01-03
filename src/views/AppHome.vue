@@ -13,7 +13,7 @@
 				</button>
 				<button
 					class="flex items-center gap-2 rounded-md bg-red-500 p-2 text-slate-100 hover:bg-red-700 disabled:bg-red-300"
-					@click="removeCompletedTasks"
+					@click="setModalRemoveCompletedTasksIsOpen(true)"
 					v-if="completedTasks"
 				>
 					<Icon class="text-xl" icon="bi:trash-fill" role="button" />
@@ -92,6 +92,55 @@
 				</DialogPanel>
 			</div>
 		</Dialog>
+		<Dialog
+			:open="ModalRemoveCompletedTasksIsOpen"
+			@close="setModalRemoveCompletedTasksIsOpen"
+			class="relative z-50"
+		>
+			<!-- The backdrop, rendered as a fixed sibling to the panel container -->
+			<div class="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+			<!-- Full-screen container to center the panel -->
+			<div class="fixed inset-0 flex w-screen items-center justify-center p-4">
+				<!-- The actual dialog panel -->
+				<DialogPanel class="w-full max-w-sm rounded-lg bg-slate-100 dark:bg-slate-600">
+					<DialogTitle
+						class="flex items-center justify-between border-b p-4 text-slate-600 dark:border-b-slate-400 dark:text-slate-200"
+					>
+						<div class="font-semibold">Remover Tarefas Completadas</div>
+						<Icon
+							class="text-xl text-slate-600 hover:text-slate-900 dark:text-slate-200 dark:hover:text-slate-400"
+							icon="ph:x-bold"
+							@click="setModalRemoveCompletedTasksIsOpen(false)"
+							role="button"
+						></Icon>
+					</DialogTitle>
+					<div class="p-4">
+						<form class="flex flex-col gap-3" @submit.prevent="removeCompletedTasks">
+							<div class="text-slate-500 dark:text-inherit">
+								<div>Tem certeza de que deseja remover as tarefas completadas?</div>
+								<div>Os dados serão apagados permanentemente!</div>
+							</div>
+							<div class="flex gap-3">
+								<button
+									type="button"
+									class="mt-1 w-full rounded-md border border-slate-400 bg-transparent p-2 text-slate-600 shadow hover:brightness-50 dark:border-slate-400 dark:text-slate-100 dark:hover:brightness-200"
+									@click="setModalRemoveCompletedTasksIsOpen(false)"
+								>
+									Cancelar
+								</button>
+								<button
+									type="submit"
+									class="mt-1 w-full rounded-md bg-red-500 p-2 text-slate-100 shadow hover:bg-red-700"
+								>
+									Remover
+								</button>
+							</div>
+						</form>
+					</div>
+				</DialogPanel>
+			</div>
+		</Dialog>
 	</div>
 </template>
 
@@ -107,6 +156,7 @@ import AppAlert from "../components/AppAlert.vue"
 const taskStore = tStore()
 
 const ModalAddTaskIsOpen = ref(false)
+const ModalRemoveCompletedTasksIsOpen = ref(false)
 
 const error = ref(false)
 let errorMessage = ""
@@ -141,6 +191,10 @@ provide("tasksRemoved", tasksRemoved)
 const setModalAddTaskIsOpen = (value: boolean) => {
 	ModalAddTaskIsOpen.value = value
 	if (!value && loadingSuggestion) loadingSuggestion.value = false
+}
+
+const setModalRemoveCompletedTasksIsOpen = (value: boolean) => {
+	ModalRemoveCompletedTasksIsOpen.value = value
 }
 
 const addTask = async () => {
