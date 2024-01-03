@@ -14,6 +14,7 @@
 				<button
 					class="flex items-center gap-2 rounded-md bg-red-500 p-2 text-slate-100 hover:bg-red-700 disabled:bg-red-300"
 					@click="removeCompletedTasks"
+					v-if="completedTasks"
 				>
 					<Icon class="text-xl" icon="bi:trash-fill" role="button" />
 					<div>Remover Completadas</div>
@@ -24,7 +25,7 @@
 				{{ remainingTasks == 1 ? "Tarefa restante" : "Tarefas restantes" }}
 			</div>
 		</div>
-		<UserTasksList @remainingTasks="setRemainingTasks" />
+		<UserTasksList @remainingTasks="setRemainingTasks" @completedTasks="setCompletedTasks" />
 		<Dialog :open="ModalAddTaskIsOpen" @close="setModalAddTaskIsOpen" class="relative z-50">
 			<!-- The backdrop, rendered as a fixed sibling to the panel container -->
 			<div class="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -121,6 +122,7 @@ const newTask = ref({
 let loadingSuggestion = ref(false)
 
 const remainingTasks = ref<number>(0)
+const completedTasks = ref<number>(0)
 
 const today = new Date().toISOString().split("T")[0]
 
@@ -187,6 +189,10 @@ const getSuggestion = async () => {
 
 const setRemainingTasks = (count: number) => {
 	remainingTasks.value = count
+}
+
+const setCompletedTasks = (count: number) => {
+	completedTasks.value = count
 }
 
 const removeCompletedTasks = async () => {

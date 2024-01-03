@@ -31,10 +31,14 @@ const tip = inject<Ref<any | null>>("tip", ref(null))
 const difficulty = inject<Ref<any | null>>("difficulty", ref(null))
 const tasksRemoved = inject<Ref<boolean>>("tasksRemoved", ref(false))
 
-const emit = defineEmits(["remainingTasks"])
+const emit = defineEmits(["remainingTasks", "completedTasks"])
 
 const remainingTasks = computed(() => {
 	return tasks.value.filter((el) => !el.completed).length
+})
+
+const completedTasks = computed(() => {
+	return tasks.value.filter((el) => el.completed).length
 })
 
 onMounted(() => {
@@ -96,6 +100,10 @@ watch(tasksRemoved, () => {
 
 watch(remainingTasks, (t) => {
 	emit("remainingTasks", t)
+})
+
+watch(completedTasks, (t) => {
+	emit("completedTasks", t)
 })
 
 const getTasks = async () => {
