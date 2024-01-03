@@ -31,7 +31,7 @@
 					<button
 						class="inline-flex items-center gap-1 rounded bg-red-500 p-2 text-slate-200 sm:tooltip sm:tooltip-bottom hover:bg-red-700"
 						data-tip="Remover"
-						@click="remove"
+						@click="setModalRemoveTaskIsOpen(true)"
 					>
 						<Icon class="text-xl" icon="bi:trash-fill" role="button" />
 						<div class="sm:hidden">Remover</div>
@@ -114,6 +114,51 @@
 				</DialogPanel>
 			</div>
 		</Dialog>
+		<Dialog :open="ModalRemoveTaskIsOpen" @close="setModalRemoveTaskIsOpen" class="relative z-50">
+			<!-- The backdrop, rendered as a fixed sibling to the panel container -->
+			<div class="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+			<!-- Full-screen container to center the panel -->
+			<div class="fixed inset-0 flex w-screen items-center justify-center p-4">
+				<!-- The actual dialog panel -->
+				<DialogPanel class="w-full max-w-sm rounded-lg bg-slate-100 dark:bg-slate-600">
+					<DialogTitle
+						class="flex items-center justify-between border-b p-4 text-slate-600 dark:border-b-slate-400 dark:text-slate-200"
+					>
+						<div class="font-semibold">Remover Tarefa</div>
+						<Icon
+							class="text-xl text-slate-600 hover:text-slate-900 dark:text-slate-200 dark:hover:text-slate-400"
+							icon="ph:x-bold"
+							@click="setModalRemoveTaskIsOpen(false)"
+							role="button"
+						></Icon>
+					</DialogTitle>
+					<div class="p-4">
+						<form class="flex flex-col gap-3" @submit.prevent="remove">
+							<div class="text-slate-500 dark:text-inherit">
+								<div>Tem certeza de que deseja remover essa tarefa?</div>
+								<div>Os dados serão apagados permanentemente!</div>
+							</div>
+							<div class="flex gap-3">
+								<button
+									type="button"
+									class="mt-1 w-full rounded-md border border-slate-400 bg-transparent p-2 text-slate-600 shadow hover:brightness-50 dark:border-slate-400 dark:text-slate-100 dark:hover:brightness-200"
+									@click="setModalRemoveTaskIsOpen(false)"
+								>
+									Cancelar
+								</button>
+								<button
+									type="submit"
+									class="mt-1 w-full rounded-md bg-red-500 p-2 text-slate-100 shadow hover:bg-red-700"
+								>
+									Remover
+								</button>
+							</div>
+						</form>
+					</div>
+				</DialogPanel>
+			</div>
+		</Dialog>
 	</div>
 </template>
 
@@ -139,6 +184,7 @@ let loadingDifficulty: Ref<boolean | undefined> = ref(task.value.loadingDifficul
 const today = new Date().toISOString().split("T")[0]
 
 const ModalTipIsOpen = ref(false)
+const ModalRemoveTaskIsOpen = ref(false)
 
 const difficultyColor = computed(() => {
 	if (task.value.completed || loadingDifficulty.value) return ""
@@ -199,6 +245,10 @@ const setModalTipIsOpen = (value: boolean) => {
 	ModalTipIsOpen.value = value
 }
 
+const setModalRemoveTaskIsOpen = (value: boolean) => {
+	ModalRemoveTaskIsOpen.value = value
+}
+
 const dateChanged = (e: Event) => {
 	loadingDifficulty.value = true
 	const inputElement = e.target as HTMLInputElement
@@ -230,5 +280,6 @@ const generateTip = async () => {
 
 const remove = async () => {
 	emit("removeTask", task.value)
+	setModalRemoveTaskIsOpen(false)
 }
 </script>
