@@ -44,3 +44,20 @@ Acesse o endereço do servidor para acessar a aplicação.
 ## Demonstração
 
 Uma demonstração do web app pode ser encontrada no site de apresentação: [GitHub Pages](https://vitorst1.github.io/WiseTodo-Presentation/)
+
+Abaixo algumas imagens:
+
+Página de Login
+![Página de Login](./images/login.png)
+
+Página Principal
+![Página Principal](./images/home.png)
+
+Página Principal em tema claro
+![Página Principal em tema claro](./images/homeLight.png)
+
+Criação de Nova Tarefa
+![Criação de Nova Tarefa](./images/newTask.png)
+
+Dica de uma Tarefa
+![Dica de uma Tarefa](./images/taskTip.png)
