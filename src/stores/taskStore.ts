@@ -119,7 +119,7 @@ export const taskStore = defineStore("task", {
                 resp = "4"
             } else {
                 const systemPrompt = `Você atuará como um orientador para um aplicativo de gerenciamento de tarefas. O usuario fornecerá a descrição de uma tarefa e um prazo no formato yyyy-mm-dd. Leve em consideração que a data atual é ${date.getCurrentDate("yyyy-mm-dd")}. Com base nessas informações, você deve avaliar a dificuldade de realizar a tarefa no prazo definido, classificando-a numericamente. Use '1' para tarefas fáceis, '2' para tarefas de dificuldade média, '3' para tarefas difíceis. Não há problema se o limite for igual à data atual. Sua resposta deve conter apenas 1 caractere.`
-                resp = await openai.completion(systemPrompt, `${task.name}${task.date}. A resposta é:`)
+                resp = await openai.completion(systemPrompt, `${task.name} ${task.date}. A resposta é:`)
                 if(!resp) {
                     if(retries >= RETRIES_LIMIT) {
                         retriesCount = 0

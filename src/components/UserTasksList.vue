@@ -114,6 +114,7 @@ const getTasks = async () => {
 const updateTaskDate = async ({ task, newDate }: { task: Task; newDate: string }) => {
 	task.date = newDate
 	try {
+		await taskStore.update(task)
 		const newDifficulty = await taskStore.generateDifficulty(task)
 		const taskIndex = tasks.value.findIndex((t) => t.id === task.id)
 		if (taskIndex !== -1) {
@@ -124,10 +125,8 @@ const updateTaskDate = async ({ task, newDate }: { task: Task; newDate: string }
 				loadingDifficulty: false,
 			}
 			tasks.value[taskIndex] = updatedTask
+			await taskStore.update(updatedTask)
 		}
-		// tasks.value = tasks.value.sort(
-		// 	(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-		// )
 	} catch (error) {
 		console.error(error)
 	}
